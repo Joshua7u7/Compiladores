@@ -90,10 +90,18 @@ class Main:
             for road_index in range(0, len(self.roads)):
                 if (self.roads[road_index].way[-1] in self.final_states):
                     self.roads[road_index].get_road(self.new_string)
+    
+    def create_error_character(self):
+        for symbol in self.new_string:
+            if symbol not in self.alphabet:
+                for state in self.states:
+                    self.transitions_objects.append(Transitions(state.get_name(), symbol, 'e'))
+                self.transitions_objects.append(Transitions('e', symbol, 'e'))
 
     
     def get_string(self):
         self.new_string = input("Type the string to validate: ")
+        self.create_error_character()
         current_state = self.initial_state
         self.roads = [Road([current_state], True)]
         for symbol in self.new_string:
