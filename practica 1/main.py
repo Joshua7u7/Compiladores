@@ -120,6 +120,7 @@ class Main:
             
 main = Main()
 main.read_file()
+keep_trying = True
 print("\n STATES INFORMATION \n")
 for state in main.states:
     state.get_info()
@@ -128,6 +129,13 @@ for transition in main.transitions:
     transition.get_information()
 input("Press enter to continue")
 sp.call( 'cls' , shell = True)
-main.get_string()
-main.show_roads()
+while( keep_trying == True):
+    main.get_string()
+    main.show_roads()
+    response = input("Keep tying? [S/n]")
+    if (response == 'S' or response == 's'):
+        keep_trying = True
+    else:
+        keep_trying = False
+
 
