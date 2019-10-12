@@ -16,7 +16,7 @@ class Main:
     def  read_file(self):
         self.filename = input("Type the filename: ")
         if  self.filename.endswith('.txt')  == False:
-            print("I´m sorry, the filename must ends with .txx")
+            print("I´m sorry, the filename must ends with .txt")
             exit(1)
         else:
             self.process_file()

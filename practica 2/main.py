@@ -88,10 +88,14 @@ class Main:
 
     def show_roads(self):
         final_roads = []
+        final_errors =[]
         for road in self.roads:
             if road.way not in final_roads:
                 final_roads.append(road.way)
+                final_errors.append(road.error_chars)
         final_roads = [ Road(road, True) for road in final_roads]
+        for index in range(0, len(final_roads)):
+            final_roads[index].error_chars = final_errors[index]
         for road in final_roads:
             if (road.way[-1] in self.final_states):
                 road.get_road(self.new_string)
@@ -159,13 +163,13 @@ class Main:
     
     def get_string(self):
         self.new_string = input("Type the string to validate: ")
-        self.create_error_character()
+        # self.create_error_character()
         self.reviewed = []
         current_state = self.initial_state
         self.roads = [Road([current_state], True)]
         self.make_epsilon_transitions()
         for symbol in self.new_string:
-            self.make_epsilon_transitions()
+            # self.make_epsilon_transitions()
             self.change_road_status()
             for road in self.roads:
                 if road.check_now == True:
@@ -173,11 +177,14 @@ class Main:
                     for transition in self.transitions_objects:
                         aux_state.append(transition.get_next_state(road.way[-1], symbol))
                     aux_state = [state for state in aux_state if state != "error"]
-                    if ( len(aux_state) > 1 ):
-                        self.create_new_roads(road, aux_state)
-                        road.add_to_road(aux_state[0])
+                    if len(aux_state) > 0:
+                        if ( len(aux_state) > 1 ):
+                            self.create_new_roads(road, aux_state)
+                            road.add_to_road(aux_state[0])
+                        else:
+                            road.add_to_road(aux_state[0])
                     else:
-                        road.add_to_road(aux_state[0])
+                        road.add_error(road.way[-1], symbol)
             self.make_epsilon_transitions()
             
 main = Main()
