@@ -2,6 +2,7 @@ import subprocess as sp
 from state import State
 from transition import Transitions
 from road import Road
+import time
 class Main:
 
     states_position = 0
@@ -80,6 +81,13 @@ class Main:
         for road in self.roads:
                 road.check_now = True
     
+    def has_epsilon(self, current_way):
+        status = []
+        for transition in self.transitions_objects:
+            status.append(transition.get_next_state(current_way[-1], 'E'))
+        status = [state for state in status if state != 'error']
+        return len(status) > 0
+
     def create_new_roads(self, road, aux_state):
         for index in range (1, len(aux_state)):
             current_way = [x[:] for x in road.way]
@@ -117,11 +125,10 @@ class Main:
         counter = 0
         aux_state = []
         for road in self.roads:
-            if road.way[-1] not in self.reviewed:
-                for transition in self.transitions_objects:
-                    aux_state.append(transition.get_next_state(road.way[-1], 'E'))
-                aux_state = [ state for state in aux_state if state != "error"]
-                counter += len(aux_state)
+            for transition in self.transitions_objects:
+                aux_state.append(transition.get_next_state(road.way[-1], 'E'))
+            aux_state = [ state for state in aux_state if state != "error"]
+            counter += len(aux_state)
         return counter
 
     def keep_on_way(self, road, next_state):
@@ -140,7 +147,6 @@ class Main:
 
     
     def make_epsilon_transitions(self):
-        self.number_of_ways_that_are_ok = 0
         while ( True ):
             another = True
             self.change_road_status()
@@ -154,11 +160,12 @@ class Main:
                     if ( another == True):
                         if ( len(aux_state) > 1):
                             self.create_new_roads(road, aux_state)
-                            self.keep_on_way(road, aux_state[0])
+                            road.add_to_road(aux_state[0])
                         else:
-                            self.keep_on_way(road, aux_state[0])
+                            road.add_to_road(aux_state[0])
             if  (self.verify_epsilon() == 0  ):
                 break
+
 
     
     def get_string(self):
