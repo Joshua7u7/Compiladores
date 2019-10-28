@@ -11,12 +11,12 @@ class Main:
     initial_transition = 4
 
     def __init__(self):
-        sp.call( 'cls' , shell = True)
+        sp.call( 'clear' , shell = True)
 
     def  read_file(self):
         self.filename = input("Type the filename: ")
         if  self.filename.endswith('.txt')  == False:
-            print("I´m sorry, the filename must ends with .txx")
+            print("Im sorry, the filename must ends with .txt")
             exit(1)
         else:
             self.process_file()
@@ -119,7 +119,7 @@ print("\n TRANSITIONS\n")
 for transition in main.transitions:
     transition.get_information()
 input("Press enter to continue")
-sp.call( 'cls' , shell = True)
+sp.call( 'clear' , shell = True)
 main.get_string()
 main.show_roads()
 
