@@ -2,6 +2,7 @@ import subprocess as sp
 from state import State
 from transition import Transitions
 from road import Road
+import time
 class Main:
 
     states_position = 0
@@ -11,7 +12,7 @@ class Main:
     initial_transition = 4
 
     def __init__(self):
-        sp.call( 'clear' , shell = True)
+        sp.call( 'cls' , shell = True)
 
     def  read_file(self):
         self.filename = input("Type the filename: ")
@@ -80,16 +81,32 @@ class Main:
         for road in self.roads:
                 road.check_now = True
     
+    def has_epsilon(self, current_way):
+        status = []
+        for transition in self.transitions_objects:
+            status.append(transition.get_next_state(current_way[-1], 'E'))
+        status = [state for state in status if state != 'error']
+        return len(status) > 0
+
     def create_new_roads(self, road, aux_state):
-        current_way = [x[:] for x in road.way]
         for index in range (1, len(aux_state)):
+            current_way = [x[:] for x in road.way]
             self.roads.append(Road(current_way, False))
             self.roads[-1].add_to_road(aux_state[index])
 
     def show_roads(self):
-            for road_index in range(0, len(self.roads)):
-                if (self.roads[road_index].way[-1] in self.final_states):
-                    self.roads[road_index].get_road(self.new_string)
+        final_roads = []
+        final_errors =[]
+        for road in self.roads:
+            if road.way not in final_roads:
+                final_roads.append(road.way)
+                final_errors.append(road.error_chars)
+        final_roads = [ Road(road, True) for road in final_roads]
+        for index in range(0, len(final_roads)):
+            final_roads[index].error_chars = final_errors[index]
+        for road in final_roads:
+            if (road.way[-1] in self.final_states):
+                road.get_road(self.new_string)
     
     def create_error_character(self):
         for symbol in self.new_string:
@@ -98,13 +115,68 @@ class Main:
                     self.transitions_objects.append(Transitions(state.get_name(), symbol, 'e'))
                 self.transitions_objects.append(Transitions('e', symbol, 'e'))
 
+    def another_iteration(self, aux_state):
+        if ( len(aux_state) == 0 ):
+            return False
+        else:
+            return True
+
+    def verify_epsilon(self):
+        counter = 0
+        aux_state = []
+        for road in self.roads:
+            for transition in self.transitions_objects:
+                aux_state.append(transition.get_next_state(road.way[-1], 'E'))
+            aux_state = [ state for state in aux_state if state != "error"]
+            counter += len(aux_state)
+        return counter
+
+    def keep_on_way(self, road, next_state):
+        counter = 0
+        for state in self.states:
+            if (state.get_name() == road.way[-1]):
+                counter += 1
+        if (counter == 0):
+            road.add_to_road(next_state)
+        else:
+            current_way = [x[:] for x in road.way]
+            self.reviewed.append(road.way[-1])
+            self.roads.append(Road(current_way, False))
+            self.roads[-1].add_to_road(next_state)
+
+
+    
+    def make_epsilon_transitions(self):
+        while ( True ):
+            another = True
+            self.change_road_status()
+            for road in self.roads:
+                if road.check_now == True:
+                    aux_state = []
+                    for transition in self.transitions_objects:
+                        aux_state.append(transition.get_next_state(road.way[-1], 'E'))
+                    aux_state = [ state for state in aux_state if state != "error"]
+                    another = self.another_iteration(aux_state)
+                    if ( another == True):
+                        if ( len(aux_state) > 1):
+                            self.create_new_roads(road, aux_state)
+                            road.add_to_road(aux_state[0])
+                        else:
+                            road.add_to_road(aux_state[0])
+            if  (self.verify_epsilon() == 0  ):
+                break
+
+
     
     def get_string(self):
         self.new_string = input("Type the string to validate: ")
-        self.create_error_character()
+        # self.create_error_character()
+        self.reviewed = []
         current_state = self.initial_state
         self.roads = [Road([current_state], True)]
+        self.make_epsilon_transitions()
         for symbol in self.new_string:
+            # self.make_epsilon_transitions()
             self.change_road_status()
             for road in self.roads:
                 if road.check_now == True:
@@ -112,11 +184,15 @@ class Main:
                     for transition in self.transitions_objects:
                         aux_state.append(transition.get_next_state(road.way[-1], symbol))
                     aux_state = [state for state in aux_state if state != "error"]
-                    if ( len(aux_state) > 1 ):
-                        self.create_new_roads(road, aux_state)
-                        road.add_to_road(aux_state[0])
+                    if len(aux_state) > 0:
+                        if ( len(aux_state) > 1 ):
+                            self.create_new_roads(road, aux_state)
+                            road.add_to_road(aux_state[0])
+                        else:
+                            road.add_to_road(aux_state[0])
                     else:
-                        road.add_to_road(aux_state[0])
+                        road.add_error(road.way[-1], symbol)
+            self.make_epsilon_transitions()
             
 main = Main()
 main.read_file()
@@ -128,20 +204,14 @@ print("\n TRANSITIONS\n")
 for transition in main.transitions:
     transition.get_information()
 input("Press enter to continue")
-<<<<<<< HEAD
-sp.call( 'clear' , shell = True)
-main.get_string()
-main.show_roads()
-=======
 sp.call( 'cls' , shell = True)
 while( keep_trying == True):
     main.get_string()
     main.show_roads()
-    response = input("Keep tying? [S/n]")
+    response = input("Keep tying? [S/n]  ")
     if (response == 'S' or response == 's'):
         keep_trying = True
     else:
         keep_trying = False
 
->>>>>>> 2b39aa7aab4f4b23843df08fac76adfade5bde11
 
