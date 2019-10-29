@@ -128,11 +128,6 @@ print("\n TRANSITIONS\n")
 for transition in main.transitions:
     transition.get_information()
 input("Press enter to continue")
-<<<<<<< HEAD
-sp.call( 'clear' , shell = True)
-main.get_string()
-main.show_roads()
-=======
 sp.call( 'cls' , shell = True)
 while( keep_trying == True):
     main.get_string()
@@ -143,5 +138,4 @@ while( keep_trying == True):
     else:
         keep_trying = False
 
->>>>>>> 2b39aa7aab4f4b23843df08fac76adfade5bde11
 
