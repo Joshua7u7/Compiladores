@@ -47,7 +47,8 @@ extern int yydebug;
   {
     ENTERO = 258,
     DECIMAL = 259,
-    STRING = 260
+    STRING = 260,
+    MOD = 261
   };
 #endif
 
@@ -62,7 +63,7 @@ union YYSTYPE
     float decimal;
     char  string;
 
-#line 66 "p4.tab.h" /* yacc.c:1909  */
+#line 67 "p4.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

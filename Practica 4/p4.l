@@ -25,19 +25,19 @@ LETRA [a-zA-Z]+
                 return (yytext[0]);
                 }
 
-"mod(" {
-    printf("Modulo 1\n ");
-    return (yytext[0]);
+"("|")" {
+    printf("Parentesis\n");
+    return(yytext[0]);
 }
 
 "," {
-    printf("Separador\n");
-    return (yytext[0]);
+    printf("Coma \n");
+    return(yytext[0]);
 }
 
-")" {
-    printf("Terminador de modulo\n");
-    return (yytext[0]);
+[Mm][Oo][Dd] {
+    printf("Modulo \n ");
+    return (MOD);
 }
 
 "\n"            {

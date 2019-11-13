@@ -17,14 +17,14 @@ void yyerror (char *s);
 %token <entero> ENTERO
 %token <decimal> DECIMAL
 %token <string> STRING
+%token MOD
 %type <entero> exp
 %type <decimal> dec
 
+
              
-%left '+'
-%left '-'
-%left '/' 
-%left '*'
+%left '+' '-'
+%left '/' '*' MOD
 %left '^'
              
 /* Gramática */
@@ -45,12 +45,18 @@ exp:     ENTERO	{ $$ = $1; }
     | exp '/' exp         { $$ = $1 / $3;	}
     | exp '-' exp         { $$ = $1 - $3;	}
     | exp '^' exp         { $$ = pow($1,$3); }
-    | 'm' exp ',' exp ')' { $$ = fmod($2,$4); }
+    | MOD'(' exp ',' exp ')' { $$ = fmod($3,$5); }
 ;
 
          
 
 dec: DECIMAL {$$ = $1; }
+    | dec '+' dec         { $$ = $1 + $3;    }
+	  | dec '*' dec         { $$ = $1 * $3;	}
+    | dec '/' dec         { $$ = $1 / $3;	}
+    | dec '-' dec         { $$ = $1 - $3;	}
+    | dec '^' dec         { $$ = pow($1,$3); }
+    | MOD'(' dec ',' dec ')' { $$ = fmod($3,$5); }
     | dec '+' exp        { $$ = $1 + $3;    }
     | exp '+' dec        { $$ = $1 + $3;    }
 	  | dec '*' exp        { $$ = $1 * $3;	}
@@ -61,8 +67,8 @@ dec: DECIMAL {$$ = $1; }
     | exp '-' dec        { $$ = $1 - $3;	}
     | dec '^' exp        { $$ = pow($1,$3); }
     | exp '^' dec        { $$ = pow($1,$3); }
-    | 'm' dec ',' exp ')' { $$ = fmod($2,$4); } 
-    | 'm' exp ',' dec ')' { $$ = fmod($2,$4); } 
+    | MOD'(' dec ',' exp ')' { $$ = fmod($3,$5); } 
+    | MOD'(' exp ',' dec ')' { $$ = fmod($3,$5); } 
 ;
 %%
 
