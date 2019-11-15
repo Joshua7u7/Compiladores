@@ -6,6 +6,7 @@
 NUM [0-9]+
 DECIMAL [0-9]+\.[0-9]+
 LETRA [a-zA-Z]+
+CAD ["][A-Za-z0-9 ]+["]
 %%
 
 {NUM}           {
@@ -43,5 +44,18 @@ LETRA [a-zA-Z]+
 "\n"            {
 		printf("Salto de linea\n");
                 return (yytext[0]);
+                }
+
+{CAD}           {
+		printf("Cadena %s\n",yytext);
+                int cont, tam;
+                char *a;
+                tam=strlen(yytext);
+                a=(char*)malloc(tam*sizeof(char));
+                for(cont=1; cont<tam-1; cont++){
+                    a[cont-1]=yytext[cont];
+                }
+                yylval.cadena=a;
+                return (CADENA);
                 }
 %%

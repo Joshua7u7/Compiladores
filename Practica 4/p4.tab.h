@@ -47,7 +47,7 @@ extern int yydebug;
   {
     ENTERO = 258,
     DECIMAL = 259,
-    STRING = 260,
+    CADENA = 260,
     MOD = 261
   };
 #endif
@@ -57,11 +57,11 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 11 "p4.y" /* yacc.c:1909  */
+#line 12 "p4.y" /* yacc.c:1909  */
 
 	int entero;
-    float decimal;
-    char  string;
+  float decimal;
+  char * cadena;
 
 #line 67 "p4.tab.h" /* yacc.c:1909  */
 };
