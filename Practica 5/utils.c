@@ -5,6 +5,8 @@
 
 void copyStrings(char * target, char * to_copy) {
     char * to_copy_clone = to_copy;
+    char * target_clone = target;
+    for (; *target_clone != '\0'; target_clone++) * target_clone = ' ';
     for (; *to_copy_clone != '\0'; to_copy_clone++) {
         *target = * to_copy_clone;
         target++;
