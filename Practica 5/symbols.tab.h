@@ -48,11 +48,12 @@ extern int yydebug;
     ENTERO = 258,
     DECIMAL = 259,
     CADENA = 260,
-    MOD = 261,
-    INT = 262,
-    FLOAT = 263,
-    STRING = 264,
-    SHOWTABLE = 265
+    NAME = 261,
+    MOD = 262,
+    INT = 263,
+    FLOAT = 264,
+    STRING = 265,
+    SHOWTABLE = 266
   };
 #endif
 
@@ -67,7 +68,7 @@ union YYSTYPE
   float decimal;
   char * cadena;
 
-#line 71 "symbols.tab.h" /* yacc.c:1909  */
+#line 72 "symbols.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -96,24 +96,28 @@ Symbol insert_string(Symbol table, char * name, char * value) {
 
 void showTable(Symbol table) {
     Symbol aux_table = table;
+    printf("\t|****************|**************|**************|\n");
+    printf("\t|      ID        |     NOMBRE   |     VALOR    |\n");
     while (aux_table != NULL) {
-        printf("Id de la variable: %d\n", aux_table->id);
-        printf("Nombre de la variable: %s \n", aux_table->variable_name);
         switch (aux_table->type) {
         case INT_:
-            printf("Valor: %d\n ", aux_table->item_value->int_value);
+            printf("\t|       %d        |        %s    |        %d    |\n", aux_table->id, 
+            aux_table->variable_name, aux_table->item_value->int_value);
             break;
         case FLOAT_:
-            printf("Valor: %.2f\n ", aux_table->item_value->float_vale);
+            printf("\t|       %d        |        %s    |        %.2f    |\n", aux_table->id, 
+            aux_table->variable_name, aux_table->item_value->float_vale);
             break;
         case STRING_:
-            printf("Valor: %s\n ", aux_table->item_value->string_value);
+            printf("\t|       %d        |        %s    |        %s    |\n", aux_table->id, 
+            aux_table->variable_name, aux_table->item_value->string_value);
             break;
         default:
             break;
         }
         aux_table = aux_table->next_item;
     }
+    printf("\t|****************|**************|**************|\n");
 }
 
 int isVariableOnTable(Symbol table, char * variable) {
@@ -136,6 +140,7 @@ Symbol reasignation_int(Symbol table, int value, char * name) {
             current_symbol->item_value->int_value = value;
             break;
         }
+        current_symbol = current_symbol->next_item;
     }
     return table;
 }
@@ -147,6 +152,7 @@ Symbol reasignation_float(Symbol table, float value, char * name) {
             current_symbol->item_value->float_vale = value;
             break;
         }
+        current_symbol = current_symbol->next_item;
     }
     return table;
 }
@@ -158,6 +164,7 @@ Symbol reasignation_string(Symbol table, char * value, char * name) {
             copyStrings(current_symbol->item_value->string_value , value);
             break;
         }
+        current_symbol = current_symbol->next_item;
     }
     return table;
 }

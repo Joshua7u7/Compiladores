@@ -23,6 +23,10 @@ CAD ["][A-Za-z0-9 ]+["]
         return (yytext[0]);
     }
 
+[Mm][Oo][Dd] {
+    return (MOD);
+}
+
 "("|")" {
     return(yytext[0]); 
 }
@@ -59,7 +63,7 @@ CAD ["][A-Za-z0-9 ]+["]
         a[cont]=yytext[cont];
     }
     yylval.cadena = a; 
-    return(CADENA);
+    return(NAME);
 }
 
 "\n" {
