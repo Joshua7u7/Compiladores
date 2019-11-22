@@ -62,7 +62,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 16 "symbols.y" /* yacc.c:1909  */
+#line 17 "symbols.y" /* yacc.c:1909  */
 
 	int entero;
   float decimal;

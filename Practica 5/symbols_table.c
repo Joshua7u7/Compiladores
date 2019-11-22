@@ -168,3 +168,29 @@ Symbol reasignation_string(Symbol table, char * value, char * name) {
     }
     return table;
 }
+
+int getType(Symbol table, char * name) {
+    Item * current_symbol = table;
+    int type;
+    while (current_symbol != NULL) {
+        if (isTheSameString(current_symbol->variable_name, name) == TRUE) {
+            type = current_symbol->type;
+            break;
+        }
+        current_symbol = current_symbol->next_item;
+    }
+    return type;
+}
+
+char * getValue(Symbol table, char * name) {
+    Item * current_symbol = table;
+    char * value = (char*)malloc(sizeof(char)*stringLen(name));
+    while (current_symbol != NULL) {
+        if (isTheSameString(current_symbol->variable_name, name) == TRUE) {
+            copyStrings(value, current_symbol->item_value->string_value);
+            break;
+        }
+        current_symbol = current_symbol->next_item;
+    }
+    return value;
+}

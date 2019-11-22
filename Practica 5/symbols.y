@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "symbols_table.h"
+#include "utils.h"
 
 int yylex();
 void yyerror (char *s);
@@ -30,6 +31,7 @@ Symbol table;
 %token SHOWTABLE
 %type <entero> exp
 %type <decimal> dec
+%type <cadena> str
 
              
 %left '+' '-'
@@ -46,6 +48,7 @@ input:    /* cadena vacía */
 line:     '\n'
     | declaration
     | reasignation
+    | str
     | exp
     | dec
 ;
@@ -89,8 +92,19 @@ reasignation:  NAME '=' exp ';'  {
   if (isOnTable(table, $1) == TRUE) table = reasignation_string(table, $3, $1);
   else printf("La variable %s no ha sido decalarada\n", $1);
 }
+| NAME '=' NAME '^' exp ';' {
+  if ( getType(table, $1) == getType(table , $3)) {
+    char * value = (char*)malloc(sizeof(char)*stringLen($3)*$5);
+    copyStrings(value, getValue(table, $3));
+    copyStrings(value, concatString(value, $5));
+    reasignation_string(table, value, $1);
+  }
+}
 ;
 
+str: CADENA { $$ = $1; }
+    | CADENA '^' exp { printf("YA estamos bien "); }
+;
 exp:     ENTERO	{ $$ = $1; }
 	  | exp '+' exp         { $$ = $1 + $3;    }
 	  | exp '*' exp         { $$ = $1 * $3;	}
@@ -120,7 +134,6 @@ dec: DECIMAL {$$ = $1; }
     | MOD'(' dec ',' exp ')' { $$ = fmod($3,$5); } 
     | MOD'(' exp ',' dec ')' { $$ = fmod($3,$5); } 
 ;
-
 %%
 
 int main() {

@@ -13,6 +13,20 @@ void copyStrings(char * target, char * to_copy) {
     }
 }
 
+char * concatString(char * string, int number) {
+    char * value = (char *)malloc(sizeof(char)*stringLen(string)*number+1);
+    char * value_aux = value;
+    for (int i = 0; i < number; i++) {
+        char * auxiliar = string;
+        while (* auxiliar != '\0') {
+            * value = * auxiliar;
+            value++;
+            auxiliar++;
+        }
+    }
+    return value_aux;
+}
+
 int isTheSameString(char * string_1, char * string_2) {
     char * current_char_string_1 = string_1;
     char * current_char_string_2 = string_2;

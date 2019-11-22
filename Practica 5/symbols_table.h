@@ -38,5 +38,7 @@ int isVariableOnTable(Symbol , char * );
 Symbol reasignation_string(Symbol , char * , char * );
 Symbol reasignation_int(Symbol , int , char * );
 Symbol reasignation_float(Symbol , float , char * );
+int getType(Symbol , char * );
+char * getValue(Symbol table, char * name); 
 
 #endif

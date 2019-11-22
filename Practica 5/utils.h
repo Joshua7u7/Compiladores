@@ -10,5 +10,6 @@ void copyStrings(char * , char * );
 void handleError(char * );
 int isTheSameString(char * , char * );
 int stringLen(char *);
+char * concatString(char * string, int number);
 
 #endif
