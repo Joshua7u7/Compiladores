@@ -99,12 +99,23 @@ Symbol reasignation (Symbol table, Values value, char * name, int option) {
 }
 
 
-char * getValue(Symbol table, char * name) {
+Values getValue(Symbol table, char * name, Values value) {
     Item * current_symbol = table;
-    char * value = (char*)malloc(sizeof(char)*stringLen(name));
+    int type = getType(table, name);
     while (current_symbol != NULL) {
         if (isTheSameString(current_symbol->variable_name, name) == TRUE) {
-            copyStrings(value, current_symbol->item_value->string_value);
+            switch (type) {
+                case INT_:
+                    value->int_value = current_symbol->item_value->int_value;
+                break;
+                case FLOAT_:
+                    value->float_value = current_symbol->item_value->float_value;
+                break;
+                case STRING_:
+                    value->string_value = (char*)malloc(sizeof(char)*stringLen(current_symbol->item_value->string_value));
+                    copyStrings(value->string_value , current_symbol->item_value->string_value);
+                break;
+            }
             break;
         }
         current_symbol = current_symbol->next_item;

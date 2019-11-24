@@ -9,6 +9,11 @@ int yylex();
 void yyerror (char *s);
 int isOnTable(Symbol table, char * name );
 void initializeValues();
+int verifyToIntType(char* name1, char* name2);
+int * getValuesInt(char * name1, char * name2);
+int verifyToFloatTypes(char* name1, char* name2);
+int verifyFloatType(char * name);
+float * getValuesFloat(char * name1, char * name2);
 
 Symbol table;
 Values current_values;
@@ -116,7 +121,7 @@ reasignation:  NAME '=' exp ';'  {
   initializeValues();
   current_values->string_value = (char*)malloc(sizeof(char)*stringLen($3)*$5);
   if ( getType(table, $1) == getType(table , $3)) {
-    copyStrings(current_values->string_value, getValue(table, $3));
+    current_values = getValue(table, $3, current_values);
     copyStrings(current_values->string_value, concatString(current_values->string_value, $5));
     reasignation(table, current_values, $1, STRING_);
   }
@@ -124,6 +129,14 @@ reasignation:  NAME '=' exp ';'  {
 ;
 
 str: CADENA { $$ = $1; }
+    | NAME {
+      if ( getType(table, $1) == STRING_) {
+        initializeValues();
+        current_values = getValue(table, $1, current_values);
+        $$ = (char*) malloc (sizeof(char)*stringLen(current_values->string_value));
+        copyStrings($$, current_values->string_value);
+      } 
+    }
     | CADENA '+' CADENA { 
       $$ = (char*) malloc(sizeof(char)*(stringLen($1)+stringLen($3)));
       copyStrings($$, concatStrings($1, $3));
@@ -133,8 +146,20 @@ str: CADENA { $$ = $1; }
       copyStrings($$, concatString($1, $3));
     }
 ;
-exp:     ENTERO	{ $$ = $1; }
-	  | exp '+' exp         { $$ = $1 + $3;    }
+exp: ENTERO	{ $$ = $1; }
+    | NAME { 
+      if ( getType(table, $1) == INT_) {
+        initializeValues();
+        current_values = getValue(table, $1, current_values);
+        $$ = current_values->int_value;
+      } 
+      else if (getType(table, $1) == FLOAT_){
+        initializeValues();
+        current_values = getValue(table, $1, current_values);
+        $$ = (int)current_values->float_value;
+      }
+    }
+	  | exp '+' exp         { $$ = $1 + $3; }
 	  | exp '*' exp         { $$ = $1 * $3;	}
     | exp '/' exp         { $$ = $1 / $3;	}
     | exp '-' exp         { $$ = $1 - $3;	}
@@ -143,21 +168,17 @@ exp:     ENTERO	{ $$ = $1; }
 ;
 
 dec: DECIMAL {$$ = $1; }
+    | exp { $$ = (float)$1; }
     | dec '+' dec         { $$ = $1 + $3;    }
 	  | dec '*' dec         { $$ = $1 * $3;	}
     | dec '/' dec         { $$ = $1 / $3;	}
     | dec '-' dec         { $$ = $1 - $3;	}
     | dec '^' dec         { $$ = pow($1,$3); }
     | MOD'(' dec ',' dec ')' { $$ = fmod($3,$5); }
-    | dec '+' exp        { $$ = $1 + $3;    }
     | exp '+' dec        { $$ = $1 + $3;    }
-	  | dec '*' exp        { $$ = $1 * $3;	}
     | exp '*' dec        { $$ = $1 * $3;	}
-    | dec '/' exp        { $$ = $1 / $3;	}
     | exp '/' dec        { $$ = $1 / $3;	}
-    | dec '-' exp        { $$ = $1 - $3;	}
     | exp '-' dec        { $$ = $1 - $3;	}
-    | dec '^' exp        { $$ = pow($1,$3); }
     | exp '^' dec        { $$ = pow($1,$3); }
     | MOD'(' dec ',' exp ')' { $$ = fmod($3,$5); } 
     | MOD'(' exp ',' dec ')' { $$ = fmod($3,$5); } 
@@ -186,4 +207,52 @@ int isOnTable(Symbol table, char * name ) {
 
 void initializeValues() {
   current_values = createValues();
+}
+
+int verifyToIntType(char* name1, char* name2) {
+  if ( getType(table, name1) == INT_ && getType(table , name2) == INT_) return TRUE;
+  else return FALSE;
+}
+
+int verifyFloatType(char * name) {
+  int type = getType(table, name);
+  if ( type == INT_ || type == FLOAT_) return TRUE;
+  else return FALSE;
+}
+
+int verifyToFloatTypes(char* name1, char* name2) {
+  int response = FALSE;
+  int type_1 = getType(table, name1);
+  int type_2 = getType(table, name2);
+  if ( type_1 == INT_ && type_2 == INT_) response = TRUE;
+  else if ( type_1 == INT_ && type_2 == FLOAT_) response = TRUE;
+  else if ( type_1 == FLOAT_ && type_2 == FLOAT_) response = TRUE;
+  else if ( type_1 == FLOAT_ && type_2 == INT_) response = TRUE;
+  return response;
+}
+
+int * getValuesInt(char * name1, char * name2) {
+  initializeValues();
+  int total_results = 2;
+  int * results = (int*)malloc(sizeof(int) * total_results);
+  if ( verifyToIntType(name1, name2) == TRUE ) {
+    current_values = getValue(table, name1, current_values);
+    results[0] = current_values->int_value;
+    current_values = getValue(table, name2, current_values);
+    results[1] = current_values->int_value;
+  }
+  return results;
+}
+
+float * getValuesFloat(char * name1, char * name2) {
+  initializeValues();
+  int total_results = 2;
+  float * results = (float*)malloc(sizeof(float) * total_results);
+  if ( verifyToFloatTypes(name1, name2) == TRUE ) {
+    current_values = getValue(table, name1, current_values);
+    results[0] = current_values->float_value;
+    current_values = getValue(table, name2, current_values);
+    results[1] = current_values->float_value;
+  }
+  return results;
 }

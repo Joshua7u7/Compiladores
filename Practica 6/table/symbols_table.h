@@ -35,7 +35,7 @@ int isEmpty(Symbol);
 void showTable(Symbol );
 int isVariableOnTable(Symbol , char * );
 int getType(Symbol , char * );
-char * getValue(Symbol , char * ); 
+Values getValue(Symbol , char * , Values ); 
 Item * fillGenericFields(Item * , char * );
 Item * setValues(Item *  , values *, int );
 Symbol insert(Symbol , char * , values *, int );
