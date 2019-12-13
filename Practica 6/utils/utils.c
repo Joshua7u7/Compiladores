@@ -24,7 +24,7 @@ char * concatStrings(char * string1 , char * string2 ) {
 }
 
 char * concatString(char * string, int number) {
-    char * value = (char *)malloc(sizeof(char)*stringLen(string)*number+1);
+    char * value = (char *)malloc(sizeof(char)*stringLen(string)*number);
     char * value_aux = value;
     for (int i = 0; i < number; i++) {
         char * auxiliar = string;
@@ -36,7 +36,16 @@ char * concatString(char * string, int number) {
     }
     return value_aux;
 }
-
+void stringReverse(char * string) {
+    char * rev_string = (char*)malloc(sizeof(char)*stringLen(string));
+    copyStrings(rev_string, string);
+    char * final_char = string;
+    for (; *rev_string != '\0'; rev_string++); rev_string--;
+    for (; *final_char != '\0'; final_char++) {
+        * final_char = * rev_string;
+        rev_string--;
+    }
+}
 
 int isTheSameString(char * string_1, char * string_2) {
     char * current_char_string_1 = string_1;

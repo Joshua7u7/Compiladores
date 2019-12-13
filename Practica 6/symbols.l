@@ -39,6 +39,10 @@ CAD ["][A-Za-z0-9 ]+["]
     return(yytext[0]); 
 }
 
+"<"|">" {
+    return(yytext[0]);
+}
+
 "int" {
     return(INT);
 }
@@ -49,6 +53,10 @@ CAD ["][A-Za-z0-9 ]+["]
 
 "string" {
     return(STRING); 
+}
+
+[iI][fF] {
+    return (IF);
 }
 
 "show_table" {

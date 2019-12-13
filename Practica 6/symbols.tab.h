@@ -53,7 +53,8 @@ extern int yydebug;
     INT = 263,
     FLOAT = 264,
     STRING = 265,
-    SHOWTABLE = 266
+    SHOWTABLE = 266,
+    IF = 267
   };
 #endif
 
@@ -68,7 +69,7 @@ union YYSTYPE
   float decimal;
   char * cadena;
 
-#line 72 "symbols.tab.h" /* yacc.c:1909  */
+#line 73 "symbols.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

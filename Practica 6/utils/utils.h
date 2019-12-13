@@ -12,4 +12,5 @@ int isTheSameString(char * , char * );
 int stringLen(char *);
 char * concatString(char * , int );
 char * concatStrings(char *  , char *  );
+void stringReverse(char * ); 
 #endif
